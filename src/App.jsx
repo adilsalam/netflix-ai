@@ -1,9 +1,9 @@
-function App() {
-  return (
-    <>
-      <div className="font-bold">Hello World</div>
-    </>
-  );
-}
+import { StrictMode } from "react";
+import { createRoot } from "react-dom/client";
+import Body from "./components/Body.jsx";
 
-export default App;
+createRoot(document.getElementById("root")).render(
+  <StrictMode>
+    <Body />
+  </StrictMode>
+);
