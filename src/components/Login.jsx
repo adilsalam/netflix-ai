@@ -1,6 +1,11 @@
 import { useRef, useState } from "react";
 import Header from "./Header";
 import { validateData } from "../utils/validate";
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+} from "firebase/auth";
+import { auth } from "../utils/firebase";
 
 const Login = () => {
   const [isSignIn, setIsSignIn] = useState(true);
@@ -11,6 +16,47 @@ const Login = () => {
   const handleButtonClick = () => {
     const message = validateData(email.current.value, password.current.value);
     setErrorMessage(message);
+
+    if (message) return;
+
+    if (!isSignIn) {
+      createUserWithEmailAndPassword(
+        auth,
+        email.current.value,
+        password.current.value
+      )
+        .then((userCredential) => {
+          // Signed up
+          const user = userCredential.user;
+          console.log(user);
+
+          // ...
+        })
+        .catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          setErrorMessage(errorCode + " " + errorMessage);
+          // ..
+        });
+    } else {
+      signInWithEmailAndPassword(
+        auth,
+        email.current.value,
+        password.current.value
+      )
+        .then((userCredential) => {
+          // Signed in
+          const user = userCredential.user;
+          console.log(user);
+
+          // ...
+        })
+        .catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          setErrorMessage(errorCode + " " + errorMessage);
+        });
+    }
   };
 
   const toggleSignInForm = () => {
@@ -48,7 +94,6 @@ const Login = () => {
           className=" rounded-sm p-3 my-3 bg-gray-700/80 w-full"
           type="text"
           name="email"
-          id=""
           placeholder="Email Address"
         />
         <input
@@ -56,7 +101,6 @@ const Login = () => {
           className=" rounded-sm p-3 my-3 bg-gray-700/80 w-full"
           type="password"
           name="Password"
-          id=""
           placeholder="Password"
         />
         <p className="text-red-600 font-bold py-2">{errorMessage}</p>
