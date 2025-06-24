@@ -4,14 +4,22 @@ import { validateData } from "../utils/validate";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
+  updateProfile,
 } from "firebase/auth";
 import { auth } from "../utils/firebase";
+import { useNavigate } from "react-router-dom";
+import { addUser } from "../utils/userSlice";
+import { useDispatch } from "react-redux";
 
 const Login = () => {
   const [isSignIn, setIsSignIn] = useState(true);
   const [errorMessage, setErrorMessage] = useState(null);
   const email = useRef(null);
   const password = useRef(null);
+  const name = useRef(null);
+
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleButtonClick = () => {
     const message = validateData(email.current.value, password.current.value);
@@ -27,8 +35,21 @@ const Login = () => {
       )
         .then((userCredential) => {
           // Signed up
+          // eslint-disable-next-line no-unused-vars
           const user = userCredential.user;
-          console.log(user);
+          updateProfile(auth.currentUser, {
+            displayName: name.current.value,
+          })
+            .then(() => {
+              const { uid, email, displayName } = auth.currentUser;
+              dispatch(
+                addUser({ uid: uid, email: email, displayName: displayName })
+              );
+              navigate("/browse");
+            })
+            .catch((error) => {
+              setErrorMessage(error.message);
+            });
 
           // ...
         })
@@ -48,6 +69,8 @@ const Login = () => {
           // Signed in
           const user = userCredential.user;
           console.log(user);
+
+          navigate("/browse");
 
           // ...
         })
@@ -82,6 +105,7 @@ const Login = () => {
         </div>
         {!isSignIn && (
           <input
+            ref={name}
             className=" rounded-sm p-3 my-3 bg-gray-700/80 w-full"
             type="text"
             name="name"
