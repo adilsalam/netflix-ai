@@ -6,7 +6,9 @@ const MovieList = ({ title, movies }) => {
 
   return (
     <div className="py-6 pl-16">
-      <p className="text-2xl pb-4 font-semibold text-white">{title}</p>
+      <p className="text-xl md:text-2xl pb-4 font-semibold text-white">
+        {title}
+      </p>
       <div
         className="flex gap-3.5 overflow-x-scroll"
         style={{ scrollbarWidth: "none" }}

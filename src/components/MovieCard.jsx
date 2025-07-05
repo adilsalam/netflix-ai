@@ -5,7 +5,11 @@ const MovieCard = ({ imagePath }) => {
   if (!imagePath) return null;
   return (
     <div>
-      <img src={IMAGE_BASE_URL + imagePath} alt="movie-card" />
+      <img
+        className="w-28 md:w-50"
+        src={IMAGE_BASE_URL + imagePath}
+        alt="movie-card"
+      />
     </div>
   );
 };
